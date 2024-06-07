@@ -9,3 +9,7 @@ variable "stockage" {
 variable "conn" {
   default = "us-east-1"
 }
+
+variable "name" {
+  default = "1"
+}
