@@ -37,14 +37,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
+    - name: Deploy in production
+      uses: appleboy/ssh-action@v0.1.8
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Deploy to production
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          set +x
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
           docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GH_TOKEN }}
           docker pull ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           curl -o docker-compose.website.yml https://raw.githubusercontent.com/ulrich-sun/youtube/main/docker-compose.website.yml
