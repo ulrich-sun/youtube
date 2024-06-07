@@ -42,7 +42,7 @@ services:
       - VIRTUAL_PORT=80
     
 networks: 
-  blackseatechnology-network: 
+  website-network: 
     name: website-network 
     driver: bridge 
 
