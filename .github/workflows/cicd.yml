@@ -31,10 +31,16 @@ jobs:
     - name: Terraform Init
       working-directory: ${{ github.workspace }}/terraform
       run: terraform init
-      
+    - name: Terraform destroy
+      working-directory: ${{ github.workspace }}/terraform
+      run: terraform destroy -auto-approve
     - name: Terraform Apply
       working-directory: ${{ github.workspace }}/terraform
       run: terraform apply -auto-approve
+
+    - name: Display Terraform Outputs
+      working-directory: ${{ github.workspace }}/terraform
+      run: terraform output
       
     - name: Get Server IP Address
       id: server_ip
