@@ -1,0 +1,7 @@
+#provider.tf
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+terraformCloudToken.txt
+main.tf
