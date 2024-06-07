@@ -11,14 +11,12 @@ env:
   TERRAFORM_DIR: 'terraform'
 
 jobs:
-
   deploy-infrastructure:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
-      with:
-        path: ${{ env.TERRAFORM_DIR }}
+    - name: Checkout code
+      uses: actions/checkout@v2
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -31,23 +29,23 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       
     - name: Terraform Init
-      working-directory: ${{ env.TERRAFORM_DIR }}
+      working-directory: ${{ github.workspace }}/terraform
       run: terraform init
       
     - name: Terraform Apply
-      working-directory: ${{ env.TERRAFORM_DIR }}
+      working-directory: ${{ github.workspace }}/terraform
       run: terraform apply -auto-approve
       
     - name: Get Server IP Address
       id: server_ip
-      working-directory: ${{ env.TERRAFORM_DIR }}
+      working-directory: ${{ github.workspace }}/terraform
       run: |
         server_ip=$(terraform output -raw server_ip)
         echo "::set-output name=server_ip::$server_ip"
         
     - name: Get Private Key
       id: private_key
-      working-directory: ${{ env.TERRAFORM_DIR }}
+      working-directory: ${{ github.workspace }}/terraform
       run: |
         private_key=$(terraform output -raw private_key)
         echo "::set-output name=private_key::$private_key"
