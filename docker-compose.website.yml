@@ -1,0 +1,48 @@
+version: '3.9'
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    restart: unless-stopped 
+    ports:
+    - "80:80"
+    - "443:443"
+    networks:
+      - website-network
+    environment:
+      DHPARAM_GENERATION: "false"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./etc/nginx/certs:/etc/nginx/certs
+      - ./etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - nginx_proxy_html:/usr/share/nginx/html
+  nginx-proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginx-proxy-letsencrypt
+    restart: unless-stopped 
+    networks:
+      - website-network
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./etc/nginx/certs:/etc/nginx/certs
+    - ./etc/nginx/vhost.d:/etc/nginx/vhost.d
+    - nginx_proxy_html:/usr/share/nginx/html
+    environment:
+      DEFAULT_EMAIL: ulrichnoumsi@eazytraining.fr
+      NGINX_PROXY_CONTAINER: nginx-proxy
+  website:
+    image: website:v1
+    container_name: website
+    restart: unless-stopped
+    networks:
+      - website-network 
+    
+networks: 
+  blackseatechnology-network: 
+    name: blackseatechnology-network 
+    driver: bridge 
+
+volumes:
+  nginx_proxy_html:
+
+
