@@ -51,4 +51,3 @@ jobs:
           docker pull ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           curl -o docker-compose.website.yml https://raw.githubusercontent.com/ulrich-sun/youtube/main/docker-compose.website.yml
           docker-compose -f docker-compose.website.yml up -d
-        EOF
