@@ -43,7 +43,7 @@ services:
     
 networks: 
   blackseatechnology-network: 
-    name: blackseatechnology-network 
+    name: website-network 
     driver: bridge 
 
 volumes:
