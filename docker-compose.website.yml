@@ -32,7 +32,7 @@ services:
       NGINX_PROXY_CONTAINER: nginx-proxy
 
   website:
-    image: ghcr.io/${{ github.actor }}/website:v1
+    image: ghcr.io/ulrich-sun/website:v1
     container_name: website
     restart: unless-stopped
     networks:
@@ -41,6 +41,15 @@ services:
       - VIRTUAL_HOST=websiteapp.ddns.net
       - LETSENCRYPT_HOST=websiteapp.ddns.net
       - VIRTUAL_PORT=80
+    
+networks: 
+  website-network: 
+    name: website-network 
+    driver: bridge 
+
+volumes:
+  nginx_proxy_html:
+
 
 networks:
   website-network:
