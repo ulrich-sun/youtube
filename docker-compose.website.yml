@@ -31,7 +31,7 @@ services:
       DEFAULT_EMAIL: ulrichnoumsi@eazytraining.fr
       NGINX_PROXY_CONTAINER: nginx-proxy
   website:
-    image: website:v1
+    image: ghcr.io/ulrich-sun/website:v1
     container_name: website
     restart: unless-stopped
     networks:
