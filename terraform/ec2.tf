@@ -4,7 +4,7 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = "generated-key"
+  key_name   = "sun-key"
   public_key = tls_private_key.ssh.public_key_openssh
 }
 
@@ -13,10 +13,10 @@ resource "aws_instance" "myec2" {
   ami             = "ami-04b70fa74e45c3917"
   instance_type   = "t2.medium"
   key_name        = aws_key_pair.generated_key.key_name
-  security_groups = ["eazytraining-sg"]
+  security_groups = ["sun-sg"]
 
   tags = {
-    Name = "machine-${count.index}"
+    Name = "sun-${count.index}"
   }
 
   root_block_device {

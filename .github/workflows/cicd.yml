@@ -43,21 +43,21 @@ jobs:
     - name: Display Terraform Outputs
       working-directory: ${{ github.workspace }}/terraform
       run: terraform output
-      
+
     - name: Get Server IP Address
       id: server_ip
       working-directory: ${{ github.workspace }}/terraform
       run: |
         server_ip=$(terraform output -raw server_ip)
         echo "server_ip=$server_ip" >> $GITHUB_ENV
-        
+
     - name: Get Private Key
       id: private_key
       working-directory: ${{ github.workspace }}/terraform
       run: |
         private_key=$(terraform output -raw private_key)
         echo "private_key=$private_key" >> $GITHUB_ENV
-        
+
     # - name: Deploy Application
     #   env:
     #     PRIVATE_KEY: ${{ env.private_key }}
@@ -67,4 +67,4 @@ jobs:
     #     chmod 600 ~/.ssh/id_rsa
         
     #     # Déployer l'application sur le serveur en utilisant l'adresse IP récupérée
-    #     ssh -i ~/.ssh/id_rsa user@${{ env.server_ip }} "cd /path/to/application && ./deploy.sh"
+    #     ssh -i ~/.ssh/id_rsa user@${{ env.server
