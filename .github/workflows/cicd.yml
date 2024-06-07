@@ -6,7 +6,7 @@ on:
       - main
   push:
     branches:
-      - main
+      - cicd
 
 env:
   IMAGE_NAME: website
@@ -46,8 +46,9 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           set +x
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }}
           docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GH_TOKEN }}
           docker pull ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          rm -rf docker-compose.website.yml
           curl -o docker-compose.website.yml https://raw.githubusercontent.com/ulrich-sun/youtube/main/docker-compose.website.yml
-          docker-compose -f docker-compose.website.yml up -d
+          docker compose -f docker-compose.website.yml up -d
