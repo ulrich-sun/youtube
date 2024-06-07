@@ -1,5 +1,5 @@
 resource "aws_security_group" "allow_http_https" {
-  name        = "2-sg"
+  name        = "5-sg"
   description = "Allow all traffic on all port"
 
   ingress {
