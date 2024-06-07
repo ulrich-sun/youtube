@@ -31,9 +31,15 @@ jobs:
     - name: Terraform Init
       working-directory: ${{ github.workspace }}/terraform
       run: terraform init
-    - name: Terraform destroy
+
+    - name: Terraform Taint Key Pair
       working-directory: ${{ github.workspace }}/terraform
-      run: terraform destroy -auto-approve
+      run: terraform taint aws_key_pair.generated_key
+
+    - name: Terraform Taint Security Group
+      working-directory: ${{ github.workspace }}/terraform
+      run: terraform taint aws_security_group.allow_http_https
+
     - name: Terraform Apply
       working-directory: ${{ github.workspace }}/terraform
       run: terraform apply -auto-approve
