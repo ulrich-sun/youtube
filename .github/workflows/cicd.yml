@@ -1,12 +1,12 @@
 name: Continuous Integration
 
 on:
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
   push:
     branches:
-      - main
+      - cicd
 
 env:
   IMAGE_NAME: website
@@ -35,7 +35,6 @@ jobs:
   deploy-website:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
     - name: Deploy in production
       uses: appleboy/ssh-action@v0.1.8
@@ -46,7 +45,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           set +x
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }}
           docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GH_TOKEN }}
           docker pull ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           curl -o docker-compose.website.yml https://raw.githubusercontent.com/ulrich-sun/youtube/main/docker-compose.website.yml
