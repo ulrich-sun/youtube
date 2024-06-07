@@ -1,5 +1,5 @@
 resource "aws_security_group" "allow_http_https" {
-  name        = "eazytraining-sg"
+  name        = "sun-sg"
   description = "Allow all traffic on all port"
 
   ingress {
