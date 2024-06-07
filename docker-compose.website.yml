@@ -44,17 +44,7 @@ services:
     
 networks: 
   website-network: 
-    name: website-network 
     driver: bridge 
-
-volumes:
-  nginx_proxy_html:
-
-
-networks:
-  website-network:
-    name: website-network
-    driver: bridge
 
 volumes:
   nginx_proxy_html:
