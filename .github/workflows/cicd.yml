@@ -1,22 +1,23 @@
-name: Continuous integration
+name: Continuous Integration
 
 on:
   pull_request:
     branches:
-    - main 
+      - main
+  push:
+    branches:
+      - main
+
 env:
-    IMAGE_NAME: website
-    IMAGE_TAG: v1
-  
+  IMAGE_NAME: website
+  IMAGE_TAG: v1
+
 jobs:
-  website: 
+  build-and-push:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: webapp
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
       with:
@@ -24,26 +25,29 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GH_TOKEN }}
 
-    - name: Build and push Docker images
+    - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: .
+        context: ./webapp
         push: true
         tags: ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
   deploy-website:
-    needs: [website]
+    needs: build-and-push
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-    - name: Deploy to production
-      uses: appleboy/ssh-action@master
+    - name: Deploy in production
+      uses: appleboy/ssh-action@v0.1.8
       with:
+        host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
-        host: ${{ secrets.HOST }}
+        port: ${{ secrets.PORT }}
         script: |
-            docker login --username ${{ github.actor }} --password ${{ secrets.GH_TOKEN }} ghcr.io
-            docker pull ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-            curl -o docker-compose.website.yml https://raw.githubusercontent.com/ulrich-sun/youtube/main/docker-compose.website.yml
-            docker compose -f docker-compose.website.yml up -d
+          set +x
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GH_TOKEN }}
+          docker pull ghcr.io/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          curl -o docker-compose.website.yml https://raw.githubusercontent.com/ulrich-sun/youtube/main/docker-compose.website.yml
+          docker-compose -f docker-compose.website.yml up -d
